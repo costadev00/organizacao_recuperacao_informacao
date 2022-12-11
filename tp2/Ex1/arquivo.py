@@ -1,12 +1,25 @@
+# Import Module
 import os
+import unidecode
 
-# directory where the text files are located
-dir_path = "/input/"
+# Folder Path
+path = r"C:\Users\mathe\Documents\GitHub\organizacao_recuperacao_informacao\tp2\Ex1\input"
 
-# list all files in the directory
-files = os.listdir(dir_path)
+# Change the directory
+os.chdir(path)
 
-# read the contents of each file and print it
-for file in files:
-    with open(os.path.join(dir_path, file), "r") as f:
-        print(f.read())
+# Read text File
+
+def read_text_file(file_path):
+    with open(file_path, 'r') as f:
+        x = f.read()
+        print(x)
+
+# iterate through all file
+for file in os.listdir():
+	# Check whether file is in text format or not
+	if file.endswith(".txt"):
+		file_path = f"{path}\\{file}"
+
+		# call read text file function
+		read_text_file(file_path)
