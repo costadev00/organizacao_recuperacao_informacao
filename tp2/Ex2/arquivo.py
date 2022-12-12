@@ -3,7 +3,7 @@ import math
 from unidecode import unidecode
 
 # Alterar para o path da pasta a ser lida!
-path = "/home/runner/TP2-TFIDF"
+path = "/home/matheuscosta/Documentos/GitHub/organizacao_recuperacao_informacao/tp2/Ex1/input"
 os.chdir(path)
 
 
@@ -14,7 +14,7 @@ def read_text_file(file_path: str):
 
 
 # Necessario que o BoW esteja no path indicado, altere o nome do .txt caso necessario
-vocabulario = read_text_file(path + "/vocabulario.txt")
+vocabulario = read_text_file(path + "/voc.txt")
 
 
 def generate_frequency_list(data: list):
@@ -41,7 +41,7 @@ def calculate_tf(data: list):
 def count_files():
     count = 0
     for file in sorted(os.listdir()):
-        if file.startswith("vocabulario"):
+        if file.startswith("voc"):
             continue
         if file.endswith(".txt"):
             count = count + 1
@@ -72,7 +72,7 @@ tf_list = []
 for file in sorted(os.listdir()):
     tf = []
     # Condicional abaixo nao ira formular array do proprio vocabulario
-    if file.startswith("vocabulario"):
+    if file.startswith("voc"):
         continue
     if file.endswith(".txt"):
         file_path = f"{path}/{file}"
@@ -81,12 +81,12 @@ for file in sorted(os.listdir()):
         frequency_list = generate_frequency_list(content_data)
         print("Vetor de frequencia: ", frequency_list)
         tf = calculate_tf(frequency_list)
-        print("TF: ", tf)
+        print("TF =  ", tf)
         print("\n")
         tf_list.append(tf)
 
 idf_list = calculate_idf(tf_list)
-print("IDF: ", idf_list)
+print("IDF = ", idf_list)
 
 
 def calculate_tf_idf():
@@ -99,4 +99,4 @@ def calculate_tf_idf():
     return tf_idf_list
 
 
-print("\nTF-IDF dos arquivos acima, respectivamente: ", calculate_tf_idf())
+print("\nTF-IDF =  ", calculate_tf_idf())
