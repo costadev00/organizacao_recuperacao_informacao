@@ -2,101 +2,102 @@ import os
 import math
 from unidecode import unidecode
 
-# Alterar para o path da pasta a ser lida!
-path = "/home/matheuscosta/Documentos/GitHub/organizacao_recuperacao_informacao/tp2/Ex1/input"
-os.chdir(path)
+# Altere para o caminho da pasta que será lida!
+caminho = "/home/matheuscosta/Documentos/GitHub/organizacao_recuperacao_informacao/tp2/Ex1/input"
+os.chdir(caminho)
 
 
-def read_text_file(file_path: str):
-    with open(file_path, "r") as file:
-        text_data = unidecode(file.read()).lower()
-    return text_data.split()
+def ler_arquivo_de_texto(caminho_do_arquivo: str):
+    with open(caminho_do_arquivo, "r") as arquivo:
+        dados_de_texto = unidecode(arquivo.read()).lower()
+    return dados_de_texto.split()
 
 
-# Necessario que o BoW esteja no path indicado, altere o nome do .txt caso necessario
-vocabulario = read_text_file(path + "/voc.txt")
+# É necessário que o BoW esteja no caminho indicado, altere o nome do .txt se necessário
+vocabulario = ler_arquivo_de_texto(caminho + "/voc.txt")
 
 
-def generate_frequency_list(data: list):
-    """Gera vetor de frequencia referente ao BoW"""
-    new_frequency_list = []
-    frequency = 0
-    for word in vocabulario:
-        frequency = data.count(word)
-        new_frequency_list.append(frequency)
-    return new_frequency_list
+def gerar_lista_de_frequencias(dados: list):
+    nova_lista_de_frequencias = []
+    frequencia = 0
+    for palavra in vocabulario:
+        frequencia = dados.count(palavra)
+        nova_lista_de_frequencias.append(frequencia)
+    return nova_lista_de_frequencias
 
 
-def calculate_tf(data: list):
-    tf_list = []
-    for element in data:
-        if (element != 0):
-            log = math.log(element, 2)
-            tf_list.append(1+log)
+def calcular_tf(dados: list):
+    lista_de_tf = []
+    for elemento in dados:
+        if (elemento != 0):
+            log = math.log(elemento, 2)
+            lista_de_tf.append(1+log)
         else:
-            tf_list.append(0)
-    return tf_list
+            lista_de_tf.append(0)
+    return lista_de_tf
 
 
-def count_files():
-    count = 0
-    for file in sorted(os.listdir()):
-        if file.startswith("voc"):
+
+def contar_arquivos():
+    contador = 0
+    for arquivo in sorted(os.listdir()):
+        if arquivo.comeca_com("voc"):
             continue
-        if file.endswith(".txt"):
-            count = count + 1
-    return count
+        if arquivo.termina_com(".txt"):
+            contador = contador + 1
+    return contador
 
+def calcular_idf(dados: list):
+    lista_contador = []
+    lista_tf = []
+    contador = 0
+    for i in range(len(dados[0])):
+        contador = 0
+        for j in range(len(dados)):
+            if (dados[j][i] > 0):
+                contador += 1
+        lista_contador.append(contador)
 
-def calculate_idf(data: list):
-    count_list = []
-    tf_list = []
-    count = 0
-    for i in range(len(data[0])):
-        count = 0
-        for j in range(len(data)):
-            if (data[j][i] > 0):
-                count += 1
-        count_list.append(count)
-
-    for element in count_list:
-        if (element != 0):
-            tf_list.append(math.log(len(data)/element, 2))
+    for elemento in lista_contador:
+        if (elemento != 0):
+            lista_tf.append(math.log(len(dados)/elemento, 2))
         else:
-            tf_list.append(0)
-    return tf_list
+            lista_tf.append(0)
+    return lista_tf
 
 
-tf_list = []
+
+lista_tf = []
 # Percorre todos os arquivos de gera uma lista de todos os TFS
-for file in sorted(os.listdir()):
+for arquivo in sorted(os.listdir()):
     tf = []
-    # Condicional abaixo nao ira formular array do proprio vocabulario
-    if file.startswith("voc"):
+    # Condicional abaixo não irá formular array do próprio vocabulário
+    if arquivo.startswith("voc"):
         continue
-    if file.endswith(".txt"):
-        file_path = f"{path}/{file}"
-        content_data = read_text_file(file_path)
-        print("Arquivo: ", file)
-        frequency_list = generate_frequency_list(content_data)
-        print("Vetor de frequencia: ", frequency_list)
-        tf = calculate_tf(frequency_list)
-        print("TF =  ", tf)
+    if arquivo.endswith(".txt"):
+        caminho_arquivo = f"{caminho}/{arquivo}"
+        conteudo_dados = ler_arquivo_de_texto(caminho_arquivo)
+        print("Arquivo: ", arquivo)
+        lista_frequencia = gerar_lista_de_frequencias(conteudo_dados)
+        print("📊 Vetor de frequência: ", lista_frequencia)
+        tf = calcular_tf(lista_frequencia)
+        print("TF = ", tf)
         print("\n")
-        tf_list.append(tf)
 
-idf_list = calculate_idf(tf_list)
-print("IDF = ", idf_list)
+        lista_tf.append(tf)
+
+lista_idf = calcular_idf(lista_tf)
+print("📊 IDF = ", lista_idf)
 
 
-def calculate_tf_idf():
-    tf_idf_list = []
-    for element in tf_list:
+def calcular_tf_idf():
+    lista_tf_idf = []
+    for elemento in lista_tf:
         tf_idf = []
-        for i in range(len(element)):
-            tf_idf.append(element[i] * idf_list[i])
-        tf_idf_list.append(tf_idf)
-    return tf_idf_list
+        for i in range(len(elemento)):
+            tf_idf.append(elemento[i] * lista_idf[i])
+        lista_tf_idf.append(tf_idf)
+    return lista_tf_idf
 
 
-print("\nTF-IDF =  ", calculate_tf_idf())
+print("\nTF-IDF =  ", calcular_tf_idf())
